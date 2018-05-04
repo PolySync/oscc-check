@@ -104,7 +104,7 @@ Options:
     -b --bustype <bustype>               CAN bus type [default: socketcan_native]
                                          (for more see https://python-can.readthedocs.io/en/2.1.0/interfaces.html)
     -c <channel>, --channel <channel>    Specify CAN channel, [default: can0]
-    -V <vehicle>, --vehicle <vehcile>    Specify your vehcile, [default: kia_soul_ev]
+    -V <vehicle>, --vehicle <vehicle>    Specify your vehicle, [default: kia_soul_ev]
                                          (kia_soul_ev / kia_soul_petrol / kia_niro)
     -v --version                         Display version information
 ```
