@@ -1,16 +1,16 @@
 #!/usr/bin/python3
-"""Usage: oscc-check.py [-hdelv] [-b <bustype>] [-c <channel>] [-V <vehicle>]
+"""Usage: oscc-check.py (-V <vehicle>) [-hdelv] [-b <bustype>] [-c <channel>]
 
 Options:
     -h --help                            Display this information
+    -V <vehicle>, --vehicle <vehicle>    Specify your vehicle. Required.
+                                         (kia_soul_ev / kia_soul_petrol / kia_niro)
     -d --disable                         Disable modules only, no further checks (overrides enable)
     -e --enable                          Enable modules only, no further checks checks
     -l --loop                            Repeat all checks, run continuously
     -b --bustype <bustype>               CAN bus type [default: socketcan_native]
                                          (for more see https://python-can.readthedocs.io/en/2.1.0/interfaces.html)
     -c <channel>, --channel <channel>    Specify CAN channel, [default: can0]
-    -V <vehicle>, --vehicle <vehicle>    Specify your vehicle, [default: kia_soul_ev]
-                                         (kia_soul_ev / kia_soul_petrol / kia_niro)
     -v --version                         Display version information
 """
 
@@ -350,9 +350,9 @@ def main(args):
     check_vehicle_arg(args['--vehicle'])
 
     bus = CanBus(
+        vehicle=args['--vehicle'],
         bustype=args['--bustype'],
-        channel=args['--channel'],
-        vehicle=args['--vehicle'])
+        channel=args['--channel'])
 
     brakes = OsccModule(base_arbitration_id=0x70, module_name='brake')
     steering = OsccModule(base_arbitration_id=0x80, module_name='steering')

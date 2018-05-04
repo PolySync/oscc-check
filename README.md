@@ -91,21 +91,21 @@ python3 setup.py install --user
 
 ## Usage
 
-`oscc-check.py [-hdelv] [-b <bustype>] [-c <channel>] [-V <vehicle>]`
+`oscc-check.py (-V <vehicle>) [-hdelv] [-b <bustype>] [-c <channel>]`
 
 ### Options
 
 ```bash
 Options:
     -h --help                            Display this information
+    -V <vehicle>, --vehicle <vehicle>    Specify your vehicle. Required.
+                                         (kia_soul_ev / kia_soul_petrol / kia_niro)
     -d --disable                         Disable modules only, no further checks (overrides enable)
     -e --enable                          Enable modules only, no further checks checks
     -l --loop                            Repeat all checks, run continuously
     -b --bustype <bustype>               CAN bus type [default: socketcan_native]
                                          (for more see https://python-can.readthedocs.io/en/2.1.0/interfaces.html)
     -c <channel>, --channel <channel>    Specify CAN channel, [default: can0]
-    -V <vehicle>, --vehicle <vehicle>    Specify your vehicle, [default: kia_soul_ev]
-                                         (kia_soul_ev / kia_soul_petrol / kia_niro)
     -v --version                         Display version information
 ```
 
@@ -124,8 +124,8 @@ for `bustype` and `channel`. After initializing the socketcan interface with:
 you can run:
 
 ```bash
-# Default Linux usage
-python3 oscc-check.py
+# Default Linux usage for Kia Soul EV
+python3 oscc-check.py -V kia_soul_ev
 ```
 
 #### Windows
@@ -135,15 +135,15 @@ On a Windows system `socketcan` is not available so the `bustype` and `channel` 
 If you've installed the Kvaser SDK you need to run:
 
 ```bash
-# Default Kvaser CANlib usage
-python oscc-check.py -c 0 -b kvaser
+# Default Kvaser CANlib usage for Kia Soul Petrol
+python oscc-check.py -c 0 -b kvaser -V kia_soul_petrol
 ```
 
 Using PCAN drivers you can run:
 
 ```bash
-# Default PEAK PCAN-USB usage
-python oscc-check.py -c PCAN_USBBUS1 -b pcan
+# Default PEAK PCAN-USB usage for Kia Niro
+python oscc-check.py -c PCAN_USBBUS1 -b pcan -V kia_niro
 ```
 
 # License

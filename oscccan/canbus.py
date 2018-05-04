@@ -29,10 +29,10 @@ class CanBus(object):
     """
     def __init__(
         self,
+        vehicle,
         bustype='socketcan_native',
         channel='can0',
-        bitrate=500000,
-        vehicle='kia_soul_ev'):
+        bitrate=500000):
         """
         Connect to CAN bus.
         """
