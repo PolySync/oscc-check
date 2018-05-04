@@ -91,7 +91,7 @@ python3 setup.py install --user
 
 ## Usage
 
-`oscc-check.py [-hdelv] [-b <bustype>] [-B <bitrate>] [-c <channel>] [-V <vehicle>]`
+`oscc-check.py [-hdelv] [-b <bustype>] [-c <channel>] [-V <vehicle>]`
 
 ### Options
 
