@@ -344,7 +344,7 @@ def check_vehicle_arg(arg):
 
 def main(args):
     if args['--version']:
-        print('oscc-check 0.0.1')
+        print('oscc-check 0.0.2')
         return
 
     check_vehicle_arg(args['--vehicle'])
