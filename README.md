@@ -72,10 +72,14 @@ But what does it do?
 
 Works with OSCC `v1.2.1` and up.
 
-### Dependencies
+### Linux Dependencies
 
 - `python3` (`sudo apt install python3`)
-- `pip3` (`sudo apt install python3-pip`)
+
+### Windows Dependencies
+
+- `python3` ([https://www.python.org/downloads/windows/](https://www.python.org/downloads/windows/))
+- CAN driver ([Kvaser](https://www.kvaser.com/developer/canlib-sdk/), [PCAN](https://www.peak-system.com/PCAN-USB.199.0.html?&L=1), etc.)
 
 ### Building
 
@@ -87,19 +91,59 @@ python3 setup.py install --user
 
 ## Usage
 
-`oscc-check.py [-hdelv] [-c <channel>] [-V <vehicle>]`
+`oscc-check.py [-hdelv] [-b <bustype>] [-c <channel>] [-V <vehicle>]`
 
 ### Options
 
 ```bash
--h --help                            Display this information
--d --disable                         Disable modules only, no further checks (overrides enable)
--e --enable                          Enable modules only, no further checks checks
--l --loop                            Repeat all checks, run continuously
--c <channel>, --channel <channel>    Specify CAN channel, defaults to 'can0'
--V <vehicle>, --vehicle <vehcile>    Specify your vehcile, defaults to 'kia_soul_ev'
-                                     (kia_soul_ev / kia_soul_petrol / kia_niro)
--v --version                         Display version information
+Options:
+    -h --help                            Display this information
+    -d --disable                         Disable modules only, no further checks (overrides enable)
+    -e --enable                          Enable modules only, no further checks checks
+    -l --loop                            Repeat all checks, run continuously
+    -b --bustype <bustype>               CAN bus type [default: socketcan_native]
+                                         (for more see https://python-can.readthedocs.io/en/2.1.0/interfaces.html)
+    -c <channel>, --channel <channel>    Specify CAN channel, [default: can0]
+    -V <vehicle>, --vehicle <vehicle>    Specify your vehicle, [default: kia_soul_ev]
+                                         (kia_soul_ev / kia_soul_petrol / kia_niro)
+    -v --version                         Display version information
+```
+
+### Usage Notes
+
+#### Linux
+
+On a Linux system `socketcan` is a default so the `oscc-check.py` can rely on the default settings
+for `bustype` and `channel`. After initializing the socketcan interface with:
+
+```bash
+ sudo ip link set can0 type can bitrate 500000
+ sudo ip link set up can0
+```
+
+you can run:
+
+```bash
+# Default Linux usage
+python3 oscc-check.py
+```
+
+#### Windows
+
+On a Windows system `socketcan` is not available so the `bustype` and `channel` must be specified.
+
+If you've installed the Kvaser SDK you need to run:
+
+```bash
+# Default Kvaser CANlib usage
+python oscc-check.py -c 0 -b kvaser
+```
+
+Using PCAN drivers you can run:
+
+```bash
+# Default PEAK PCAN-USB usage
+python oscc-check.py -c PCAN_USBBUS1 -b pcan
 ```
 
 # License

@@ -1,13 +1,15 @@
 #!/usr/bin/python3
-"""Usage: oscc-check.py [-hdelv] [-c <channel>] [-V <vehicle>]
+"""Usage: oscc-check.py [-hdelv] [-b <bustype>] [-c <channel>] [-V <vehicle>]
 
 Options:
     -h --help                            Display this information
     -d --disable                         Disable modules only, no further checks (overrides enable)
     -e --enable                          Enable modules only, no further checks checks
     -l --loop                            Repeat all checks, run continuously
-    -c <channel>, --channel <channel>    Specify CAN channel, defaults to 'can0'
-    -V <vehicle>, --vehicle <vehcile>    Specify your vehcile, defaults to 'kia_soul_ev'
+    -b --bustype <bustype>               CAN bus type [default: socketcan_native]
+                                         (for more see https://python-can.readthedocs.io/en/2.1.0/interfaces.html)
+    -c <channel>, --channel <channel>    Specify CAN channel, [default: can0]
+    -V <vehicle>, --vehicle <vehicle>    Specify your vehicle, [default: kia_soul_ev]
                                          (kia_soul_ev / kia_soul_petrol / kia_niro)
     -v --version                         Display version information
 """
@@ -342,14 +344,15 @@ def check_vehicle_arg(arg):
 
 def main(args):
     if args['--version']:
-        print('oscc-check 0.0.1')
+        print('oscc-check 0.0.2')
         return
 
     check_vehicle_arg(args['--vehicle'])
 
-    channel = 'can0' if args['--channel'] is None else str(args['--channel'])
-
-    bus = CanBus(channel=channel, vehicle=args['--vehicle'])
+    bus = CanBus(
+        bustype=args['--bustype'],
+        channel=args['--channel'],
+        vehicle=args['--vehicle'])
 
     brakes = OsccModule(base_arbitration_id=0x70, module_name='brake')
     steering = OsccModule(base_arbitration_id=0x80, module_name='steering')
