@@ -72,7 +72,7 @@ But what does it do?
 
 Works with OSCC `v1.2.1` and up.
 
-### Ubuntu Dependencies
+### Linux Dependencies
 
 - `python3` (`sudo apt install python3`)
 
