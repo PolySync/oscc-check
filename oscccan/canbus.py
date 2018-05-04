@@ -41,7 +41,7 @@ class CanBus(object):
             self.bus = can.interface.Bus(
                 bustype=bustype,
                 channel=channel,
-                bitrate=bitrate)
+                bitrate=int(bitrate))
         except:
             raise Exception(
                 'unable to connect to CAN bus, check that hardware '
