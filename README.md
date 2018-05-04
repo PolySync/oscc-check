@@ -124,8 +124,8 @@ for `bustype` and `channel`. After initializing the socketcan interface with:
 you can run:
 
 ```bash
-# Default Linux usage
-python3 oscc-check.py
+# Default Linux usage for Kia Soul EV
+python3 oscc-check.py -V kia_soul_ev
 ```
 
 #### Windows
@@ -135,15 +135,15 @@ On a Windows system `socketcan` is not available so the `bustype` and `channel` 
 If you've installed the Kvaser SDK you need to run:
 
 ```bash
-# Default Kvaser CANlib usage
-python oscc-check.py -c 0 -b kvaser
+# Default Kvaser CANlib usage for Kia Soul Petrol
+python oscc-check.py -c 0 -b kvaser -V kia_soul_petrol
 ```
 
 Using PCAN drivers you can run:
 
 ```bash
-# Default PEAK PCAN-USB usage
-python oscc-check.py -c PCAN_USBBUS1 -b pcan
+# Default PEAK PCAN-USB usage for Kia Niro
+python oscc-check.py -c PCAN_USBBUS1 -b pcan -V kia_niro
 ```
 
 # License
