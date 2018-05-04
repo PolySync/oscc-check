@@ -1,13 +1,16 @@
 #!/usr/bin/python3
-"""Usage: oscc-check.py [-hdelv] [-c <channel>] [-V <vehicle>]
+"""Usage: oscc-check.py [-hdelv] [-b <bustype>] [-B <bitrate>] [-c <channel>] [-V <vehicle>]
 
 Options:
     -h --help                            Display this information
     -d --disable                         Disable modules only, no further checks (overrides enable)
     -e --enable                          Enable modules only, no further checks checks
     -l --loop                            Repeat all checks, run continuously
-    -c <channel>, --channel <channel>    Specify CAN channel, defaults to 'can0'
-    -V <vehicle>, --vehicle <vehcile>    Specify your vehcile, defaults to 'kia_soul_ev'
+    -b --bustype <bustype>               CAN bus type [default: socketcan_native]
+                                         (for more see https://python-can.readthedocs.io/en/2.1.0/interfaces.html)
+    -B --bitrate <bitrate>               CAN bus bit rate [default: 500000]
+    -c <channel>, --channel <channel>    Specify CAN channel, [default: can0]
+    -V <vehicle>, --vehicle <vehcile>    Specify your vehcile, [default: kia_soul_ev]
                                          (kia_soul_ev / kia_soul_petrol / kia_niro)
     -v --version                         Display version information
 """
@@ -347,9 +350,11 @@ def main(args):
 
     check_vehicle_arg(args['--vehicle'])
 
-    channel = 'can0' if args['--channel'] is None else str(args['--channel'])
-
-    bus = CanBus(channel=channel, vehicle=args['--vehicle'])
+    bus = CanBus(
+        bustype=args['--bustype'],
+        channel=args['--channel'],
+        bitrate=args['--bitrate'],
+        vehicle=args['--vehicle'])
 
     brakes = OsccModule(base_arbitration_id=0x70, module_name='brake')
     steering = OsccModule(base_arbitration_id=0x80, module_name='steering')
