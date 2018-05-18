@@ -4,13 +4,15 @@ Import as 'oscccan'
 
 __all__ = [
     'canbus',
-    ]
+]
+
 
 class OsccModule(object):
     """
     Wrapper to CAN data specific to an OSCC module. Used with CanBus class to
     communicate on the OSCC CAN bus.
     """
+
     def __init__(self, base_arbitration_id, module_name=None):
         """
         Initialize CAN data specific to OSCC module.
