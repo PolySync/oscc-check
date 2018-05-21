@@ -15,24 +15,28 @@ import time
 
 from oscccan import OsccModule
 
+
 class Report(object):
     """
     Class returned by the command methods of the 'CanBus' class.
     """
+
     def __init__(self, success=None, value=None):
         self.success = success
         self.value = value
+
 
 class CanBus(object):
     """
     CanBus class for to connecting to a CAN bus and communicating with OSCC modules.
     """
+
     def __init__(
-        self,
-        vehicle,
-        bustype='socketcan_native',
-        channel='can0',
-        bitrate=500000):
+            self,
+            vehicle,
+            bustype='socketcan_native',
+            channel='can0',
+            bitrate=500000):
         """
         Connect to CAN bus.
         """
@@ -52,6 +56,18 @@ class CanBus(object):
         self.wheel_speed_arbitration_ids = [0x4B0, 0x386]
         self.vehicle = vehicle
 
+    def reading_sleep(self, duration=1.0):
+        """
+        Used in place of `time.sleep()`. Enables "waiting" for some interval while maintaining
+        confidence that once we start unpacking at the car's reports again that data hasn't gone
+        stale.
+        """
+
+        end = time.time() + duration
+
+        while time.time() < end:
+            self.recv_report()
+
     def bus_send_msg(self, arbitration_id, data=None, timeout=1.0):
         """
         Send a frame on OSCC CAN bus.
@@ -59,7 +75,7 @@ class CanBus(object):
 
         msg = can.Message(
             arbitration_id=arbitration_id,
-            data=data)
+            data=data, extended_id=False)
         self.bus.send(msg, timeout=timeout)
 
     def enable_module(self, module, timeout=None):
@@ -89,10 +105,10 @@ class CanBus(object):
         )
 
     def check_module_enabled_status(
-        self,
-        module,
-        timeout=1.0,
-        expect=False):
+            self,
+            module,
+            timeout=1.0,
+            expect=False):
         """
         Check if OSCC module is enabled/disabled.
         """
@@ -115,16 +131,16 @@ class CanBus(object):
                     break
 
                 if byte_lst[2] == 0 and expect is False:
-                    status =  True
+                    status = True
                     break
 
         return status
 
     def send_command(
-        self,
-        module,
-        value,
-        timeout=None):
+            self,
+            module,
+            value,
+            timeout=None):
         """
         Send control command specifed by floating point value to the OsccModule parameter.
         """
@@ -136,7 +152,7 @@ class CanBus(object):
         except:
             raise ValueError('invalid command', value)
 
-        byte_list = list(bytearray(struct.pack("f", value)))
+        byte_list = list(bytearray(struct.pack("=f", value)))
 
         self.bus_send_msg(
             arbitration_id=module.command_arbitration_id,
@@ -145,10 +161,10 @@ class CanBus(object):
         )
 
     def recv_report(
-        self,
-        module=None,
-        can_ids=None,
-        timeout=1.0):
+            self,
+            module=None,
+            can_ids=None,
+            timeout=1.0):
         """
         If OsccModule parameter is valid, return its report message.
         If OsccModule invalid and can_id is valid, return message with that ID.
@@ -183,10 +199,10 @@ class CanBus(object):
                 return None
 
     def check_brake_pressure(
-        self,
-        increase_from=None,
-        decrease_from=None,
-        timeout=2.0,):
+            self,
+            increase_from=None,
+            decrease_from=None,
+            timeout=2.0,):
         """
         Check brake pressure report from vehicle. If the increase_from or decrease_from parameters
         are populated, verify the reported value did increase or decrease.
@@ -200,7 +216,8 @@ class CanBus(object):
                     value = None
                 return Report(success=False, value=value)
 
-            msg = self.recv_report(can_ids=self.brake_pressure_arbitration_ids, timeout=timeout)
+            msg = self.recv_report(
+                can_ids=self.brake_pressure_arbitration_ids, timeout=timeout)
 
             if msg is None:
                 continue
@@ -209,13 +226,13 @@ class CanBus(object):
                 # Niro
                 byte1 = (msg.data[4] & 0x0F) << 8
                 byte0 = msg.data[3]
-                value = int(str(byte1|byte0), 10)
+                value = int(str(byte1 | byte0), 10)
                 value /= 40
             else:
                 # Soul EV and Petrol
                 byte1 = (msg.data[5] & 0x0F) << 8
                 byte0 = msg.data[4]
-                value = int(str(byte1|byte0), 10)
+                value = int(str(byte1 | byte0), 10)
                 value /= 10
 
             if increase_from is not None:
@@ -228,10 +245,10 @@ class CanBus(object):
                 return Report(success=True, value=value)
 
     def check_steering_wheel_angle(
-        self,
-        increase_from=None,
-        decrease_from=None,
-        timeout=2.0):
+            self,
+            increase_from=None,
+            decrease_from=None,
+            timeout=2.0):
         """
         Check steering wheel angle report from vehicle. If the increase_from or decrease_from
         parameters are populated, verify the reported value did increase or decrease.
@@ -252,7 +269,7 @@ class CanBus(object):
             if msg is None:
                 continue
 
-            value = -float(struct.unpack("h", msg.data[:2])[0]) / 10.0
+            value = -float(struct.unpack("=h", msg.data[:2])[0]) / 10.0
 
             if increase_from is not None:
                 if value > increase_from:
@@ -269,13 +286,13 @@ class CanBus(object):
         """
         byte1 = (data[offset + 1] & 0x0F) << 8
         byte0 = data[offset]
-        value = int(str(byte1|byte0), 10)
+        value = int(str(byte1 | byte0), 10)
 
         return float(value) / 10.0
 
     def check_wheel_speed(
-        self,
-        timeout=2.0):
+            self,
+            timeout=2.0):
         """
         Check wheel speed report from vehicle.
         """
@@ -286,7 +303,8 @@ class CanBus(object):
             if time.time() > wait:
                 return Report(success=False, value=None)
 
-            msg = self.recv_report(can_ids=self.wheel_speed_arbitration_ids, timeout=timeout)
+            msg = self.recv_report(
+                can_ids=self.wheel_speed_arbitration_ids, timeout=timeout)
 
             if msg is not None:
                 left_front = None

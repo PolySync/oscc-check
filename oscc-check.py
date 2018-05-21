@@ -32,12 +32,14 @@ from oscccan.canbus import CanBus
 from oscccan.canbus import Report
 from oscccan import OsccModule
 
+
 class DebugModules(object):
     """
     The 'DebugModules' class contains references to each of the OsccModules,
     brake, steering, and throttle. It is used to manage a majority of the stdout reporting this
     tool relies on.
     """
+
     def __init__(self, bus, brake, steering, throttle):
         """
         Initialize references to modules and CAN bus as well as the 'last_measurement' variable
@@ -48,18 +50,6 @@ class DebugModules(object):
         self.steering = steering
         self.throttle = throttle
         self.last_measurement = None
-
-    def reading_sleep(self, duration=1.0):
-        """
-        Used in place of `time.sleep()`. Enables "waiting" for some interval while maintaining
-        confidence that once we start unpacking at the car's reports again that data hasn't gone
-        stale.
-        """
-
-        end = time.time() + duration
-
-        while time.time() < end:
-            self.bus.recv_report()
 
     def enable(self):
         """
@@ -117,7 +107,8 @@ class DebugModules(object):
             expect=True)
 
         if success:
-            print(Fore.GREEN + ' success:', Style.RESET_ALL, module.module_name, 'module enabled')
+            print(Fore.GREEN + ' success:', Style.RESET_ALL,
+                  module.module_name, 'module enabled')
         else:
             print(
                 Fore.RED +
@@ -126,7 +117,7 @@ class DebugModules(object):
                 module.module_name,
                 'module could not be enabled')
 
-        self.reading_sleep()
+        self.bus.reading_sleep()
 
         return success
 
@@ -156,7 +147,8 @@ class DebugModules(object):
             expect=False)
 
         if success:
-            print(Fore.GREEN + ' success:', Style.RESET_ALL, module.module_name, 'module disabled')
+            print(Fore.GREEN + ' success:', Style.RESET_ALL,
+                  module.module_name, 'module disabled')
             return True
         else:
             print(
@@ -189,14 +181,17 @@ class DebugModules(object):
             'to brake module')
         self.bus.send_command(self.brake, cmd_value, timeout=1.0)
 
-        self.reading_sleep()
+        self.bus.reading_sleep()
 
-        print(Fore.MAGENTA + ' status: ', Style.RESET_ALL, 'measuring brake pressure')
+        print(Fore.MAGENTA + ' status: ',
+              Style.RESET_ALL, 'measuring brake pressure')
 
         if expect == 'increase':
-            report = self.bus.check_brake_pressure(timeout=1.0, increase_from=self.last_measurement)
+            report = self.bus.check_brake_pressure(
+                timeout=1.0, increase_from=self.last_measurement)
         elif expect == 'decrease':
-            report = self.bus.check_brake_pressure(timeout=1.0, decrease_from=self.last_measurement)
+            report = self.bus.check_brake_pressure(
+                timeout=1.0, decrease_from=self.last_measurement)
         else:
             report = self.bus.check_brake_pressure(timeout=1.0)
 
@@ -220,12 +215,12 @@ class DebugModules(object):
                     self.last_measurement,
                     ')')
             else:
-                print(Fore.RED + ' error:  ', Style.RESET_ALL, 'failed to read brake pressure')
+                print(Fore.RED + ' error:  ', Style.RESET_ALL,
+                      'failed to read brake pressure')
 
         self.last_measurement = report.value
 
-
-        self.reading_sleep()
+        self.bus.reading_sleep()
 
     def command_steering_module(self, cmd_value, expect=None):
         """
@@ -249,9 +244,10 @@ class DebugModules(object):
             'to steering module')
         self.bus.send_command(self.steering, cmd_value, timeout=1.0)
 
-        self.reading_sleep()
+        self.bus.reading_sleep()
 
-        print(Fore.MAGENTA + ' status: ', Style.RESET_ALL, 'measuring steering wheel angle')
+        print(Fore.MAGENTA + ' status: ', Style.RESET_ALL,
+              'measuring steering wheel angle')
 
         report = Report()
         report.success = False
@@ -290,7 +286,7 @@ class DebugModules(object):
 
         self.last_measurement = report.value
 
-        self.reading_sleep()
+        self.bus.reading_sleep()
 
     def command_throttle_module(self, cmd_value, expect=None):
         """
@@ -315,7 +311,8 @@ class DebugModules(object):
 
         self.bus.send_command(self.throttle, cmd_value, timeout=1.0)
 
-        print(Fore.MAGENTA + ' status:', Style.RESET_ALL, ' measuring wheel speed')
+        print(Fore.MAGENTA + ' status:',
+              Style.RESET_ALL, ' measuring wheel speed')
 
         report = self.bus.check_wheel_speed(timeout=1.0)
 
@@ -327,11 +324,13 @@ class DebugModules(object):
                 ', lr', str(report.value[2]) +
                 ', rr', str(report.value[3]))
         else:
-            print(Fore.RED + ' error:', Style.RESET_ALL, '  failed to read wheel speeds')
+            print(Fore.RED + ' error:', Style.RESET_ALL,
+                  '  failed to read wheel speeds')
 
         self.last_measurement = report.value
 
-        self.reading_sleep()
+        self.bus.reading_sleep()
+
 
 def check_vehicle_arg(arg):
     """
@@ -340,7 +339,9 @@ def check_vehicle_arg(arg):
 
     vehicles = ['kia_soul_ev', 'kia_soul_petrol', 'kia_niro', None]
     if arg not in vehicles:
-        raise ValueError('Unable to target vehicle', arg + '. Options are', vehicles)
+        raise ValueError('Unable to target vehicle',
+                         arg + '. Options are', vehicles)
+
 
 def main(args):
     if args['--version']:
@@ -428,6 +429,7 @@ def main(args):
 
         # Visually distinguish disable steps from the following enable steps
         print("|Enable Modules -----------------------------------------------------------------|")
+
 
 if __name__ == "__main__":
     """
