@@ -137,7 +137,7 @@ class DebugModules(object):
         # frame to OSCC/DriveKit over its CAN gateway.
         self.bus.disable_module(module)
 
-        time.sleep(1)
+        self.bus.reading_sleep()
 
         # Verify the module parameter is disabled by listening to the OSCC/DriveKit CAN gateway for
         # a status message that confirms it. Set the `success` flag so we can report and handle
@@ -435,5 +435,4 @@ if __name__ == "__main__":
     """
     The program's entry point if run as an executable.
     """
-
     main(docopt(__doc__))
