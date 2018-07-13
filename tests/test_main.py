@@ -14,7 +14,7 @@ from hypothesis import given, HealthCheck, reject, settings
 from hypothesis.strategies import (
     integers, lists, randoms, text, sampled_from, characters, composite)
 
-from tests import CLI, oscc_check, mock_canbus
+from tests import CLI, oscc_check, mocks
 
 
 class Main(unittest.TestCase):
@@ -47,6 +47,7 @@ def runtime_args(draw):
 @settings(max_examples=25)
 @given(runtime_args())
 def test_valid_flags_valid_args(args):
-    oscc_check.CanBus = mock_canbus.CanBus
+    oscc_check.colorama.init = mocks.CallableNoOp
+    oscc_check.CanBus = mocks.CanBus
     main = Main()
     assert main.run(args=args)
