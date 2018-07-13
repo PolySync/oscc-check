@@ -46,6 +46,8 @@ class CLI(object):
             ['-c', 'can0'],
             ['-c', 'can1'],
             ['-c', '0'],
+            ['-c', '1'],
+            ['-c', 'PCAN_USBBUS0'],
             ['-c', 'PCAN_USBBUS1'],
             ['-b', 'kvaser'],
             ['-b', 'socketcan'],
@@ -69,9 +71,10 @@ class CLI(object):
     def valid_options():
         return [
             ['-c', 'can0'],
-            ['-c', 'can0'],
             ['-c', 'can1'],
             ['-c', '0'],
+            ['-c', '1'],
+            ['-c', 'PCAN_USBBUS0'],
             ['-c', 'PCAN_USBBUS1'],
             ['-b', 'kvaser'],
             ['-b', 'socketcan'],
