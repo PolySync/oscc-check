@@ -80,3 +80,8 @@ class CanBus(object):
             self,
             timeout=2.0):
         return self.report_success()
+
+
+class CallableNoOp:
+    def __call__(self, *args):
+        pass

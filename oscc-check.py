@@ -435,4 +435,5 @@ if __name__ == "__main__":
     """
     The program's entry point if run as an executable.
     """
+
     main(docopt(__doc__))
