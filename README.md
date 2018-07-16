@@ -146,6 +146,10 @@ Using PCAN drivers you can run:
 python oscc-check.py -c PCAN_USBBUS1 -b pcan -V kia_niro
 ```
 
+### Running Tests
+
+`python3 setup.py test`
+
 # License
 
 © 2018, PolySync Technologies, Inc., Shea Newton <snewton@polysync.io>
