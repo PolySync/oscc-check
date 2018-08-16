@@ -101,7 +101,7 @@ Options:
     -V <vehicle>, --vehicle <vehicle>    Specify your vehicle. Required.
                                          (kia_soul_ev / kia_soul_petrol / kia_niro)
     -d --disable                         Disable modules only, no further checks (overrides enable)
-    -e --enable                          Enable modules only, no further checks checks
+    -e --enable                          Enable modules only, no further checks
     -l --loop                            Repeat all checks, run continuously
     -b --bustype <bustype>               CAN bus type [default: socketcan_native]
                                          (for more see https://python-can.readthedocs.io/en/2.1.0/interfaces.html)
